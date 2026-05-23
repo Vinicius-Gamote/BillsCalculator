@@ -1,0 +1,117 @@
+<section class="page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Movimento</p>
+      <h1>Lancamentos</h1>
+      <p class="muted">Registre receitas e despesas com data, categoria e observacoes.</p>
+    </div>
+  </div>
+
+  <p class="alert" *ngIf="error">{{ error }}</p>
+
+  <section class="panel">
+    <h2>{{ editingId ? 'Editar lancamento' : 'Novo lancamento' }}</h2>
+    <form class="form-grid transaction-form" [formGroup]="form" (ngSubmit)="save()">
+      <div class="field span-two">
+        <label for="description">Descricao</label>
+        <input id="description" type="text" formControlName="description" maxlength="160">
+      </div>
+
+      <div class="field">
+        <label for="amount">Valor</label>
+        <input id="amount" type="number" min="0.01" step="0.01" formControlName="amount">
+      </div>
+
+      <div class="field">
+        <label for="occurredOn">Data</label>
+        <input id="occurredOn" type="date" formControlName="occurredOn">
+      </div>
+
+      <div class="field">
+        <label for="type">Tipo</label>
+        <select id="type" formControlName="type">
+          <option value="Income">Entrada</option>
+          <option value="Expense">Saida</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="categoryId">Categoria</label>
+        <select id="categoryId" formControlName="categoryId">
+          <option value="">Selecione</option>
+          <option *ngFor="let category of formCategories()" [value]="category.id">{{ category.name }}</option>
+        </select>
+      </div>
+
+      <div class="field span-two">
+        <label for="notes">Observacoes</label>
+        <input id="notes" type="text" formControlName="notes" maxlength="500">
+      </div>
+
+      <div class="actions form-actions">
+        <button type="submit" class="primary-button">{{ editingId ? 'Salvar' : 'Adicionar' }}</button>
+        <button type="button" class="secondary-button" *ngIf="editingId" (click)="reset()">Cancelar</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="section-title">
+      <h2>Historico</h2>
+      <span>{{ transactions.length }}</span>
+    </div>
+
+    <div class="filters">
+      <select [(ngModel)]="filters.type" (change)="applyTypeFilter()" aria-label="Tipo">
+        <option value="">Todos</option>
+        <option value="Income">Entradas</option>
+        <option value="Expense">Saidas</option>
+      </select>
+
+      <select [(ngModel)]="filters.categoryId" (change)="load()" aria-label="Categoria">
+        <option value="">Categorias</option>
+        <option *ngFor="let category of filterCategories()" [value]="category.id">{{ category.name }}</option>
+      </select>
+
+      <input type="date" [(ngModel)]="filters.from" (change)="load()" aria-label="Data inicial">
+      <input type="date" [(ngModel)]="filters.to" (change)="load()" aria-label="Data final">
+    </div>
+
+    <div class="table-wrap" *ngIf="transactions.length; else emptyTransactions">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Descricao</th>
+            <th>Categoria</th>
+            <th>Tipo</th>
+            <th>Valor</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let transaction of transactions">
+            <td>{{ transaction.occurredOn }}</td>
+            <td>
+              <strong>{{ transaction.description }}</strong>
+              <small *ngIf="transaction.notes">{{ transaction.notes }}</small>
+            </td>
+            <td><i class="swatch" [ngStyle]="{ background: transaction.categoryColor }"></i> {{ transaction.categoryName }}</td>
+            <td><span class="badge" [class.income]="transaction.type === 'Income'" [class.expense]="transaction.type === 'Expense'">{{ typeLabel(transaction.type) }}</span></td>
+            <td [class.money-income]="transaction.type === 'Income'" [class.money-expense]="transaction.type === 'Expense'">{{ formatCurrency(transaction.amount) }}</td>
+            <td>
+              <div class="actions row-actions">
+                <button type="button" class="icon-button" (click)="edit(transaction)">Editar</button>
+                <button type="button" class="danger-button" (click)="delete(transaction)">Excluir</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #emptyTransactions>
+      <div class="empty">{{ loading ? 'Carregando...' : 'Nenhum lancamento encontrado.' }}</div>
+    </ng-template>
+  </section>
+</section>

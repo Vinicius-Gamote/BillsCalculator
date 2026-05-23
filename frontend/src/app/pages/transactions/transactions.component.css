@@ -1,0 +1,59 @@
+.transaction-form {
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+}
+
+.span-two {
+  grid-column: span 2;
+}
+
+.form-actions {
+  align-self: end;
+}
+
+.section-title {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title span {
+  background: #edf3f8;
+  border-radius: 999px;
+  color: #516173;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 6px 10px;
+}
+
+.filters {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
+  margin-bottom: 12px;
+}
+
+td strong,
+td small {
+  display: block;
+}
+
+td small {
+  color: #607086;
+  margin-top: 2px;
+}
+
+.row-actions {
+  justify-content: flex-end;
+}
+
+@media (max-width: 920px) {
+  .transaction-form,
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .span-two {
+    grid-column: span 1;
+  }
+}

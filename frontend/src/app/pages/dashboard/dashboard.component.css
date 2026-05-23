@@ -1,0 +1,154 @@
+.filters {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(110px, 1fr));
+  min-width: min(100%, 580px);
+}
+
+.stats-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.stat-card {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+}
+
+.stat-card span {
+  color: #607086;
+  font-weight: 800;
+}
+
+.stat-card strong {
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.05;
+}
+
+.stat-card.income {
+  border-color: #bbf7d0;
+}
+
+.stat-card.expense {
+  border-color: #fecaca;
+}
+
+.negative {
+  color: #dc2626;
+}
+
+.section-title {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.section-title span {
+  background: #edf3f8;
+  border-radius: 999px;
+  color: #516173;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 6px 10px;
+}
+
+.monthly-chart {
+  align-items: end;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(12, minmax(28px, 1fr));
+  height: 280px;
+  padding-top: 16px;
+}
+
+.month-column {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-rows: 1fr auto;
+  height: 100%;
+  min-width: 28px;
+}
+
+.bars {
+  align-items: end;
+  display: flex;
+  gap: 4px;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+.bar {
+  border-radius: 8px 8px 2px 2px;
+  display: block;
+  min-height: 0;
+  width: 12px;
+}
+
+.income-bar {
+  background: #16a34a;
+}
+
+.expense-bar {
+  background: #dc2626;
+}
+
+.month-column small {
+  color: #607086;
+  font-weight: 800;
+}
+
+.category-bars {
+  display: grid;
+  gap: 16px;
+}
+
+.category-row {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.category-row span {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.track {
+  background: #edf3f8;
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.track span {
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+}
+
+@media (max-width: 960px) {
+  .filters,
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .filters,
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .monthly-chart {
+    gap: 6px;
+    overflow-x: auto;
+  }
+}

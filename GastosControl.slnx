@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/backend/" />
+  <Folder Name="/backend/src/">
+    <Project Path="backend/src/GastosControl.Api/GastosControl.Api.csproj" />
+    <Project Path="backend/src/GastosControl.Application/GastosControl.Application.csproj" />
+    <Project Path="backend/src/GastosControl.Domain/GastosControl.Domain.csproj" />
+    <Project Path="backend/src/GastosControl.Infrastructure/GastosControl.Infrastructure.csproj" />
+  </Folder>
+</Solution>

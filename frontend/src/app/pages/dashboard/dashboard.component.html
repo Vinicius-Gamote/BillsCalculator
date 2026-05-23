@@ -1,0 +1,126 @@
+<section class="page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Visao geral</p>
+      <h1>Dashboard</h1>
+      <p class="muted">Entradas e saidas separadas por mes, ano e categoria.</p>
+    </div>
+
+    <div class="filters">
+      <select [(ngModel)]="filters.year" (change)="load()" aria-label="Ano">
+        <option *ngFor="let year of years" [ngValue]="year">{{ year }}</option>
+      </select>
+
+      <select [(ngModel)]="filters.month" (change)="load()" aria-label="Mes">
+        <option *ngFor="let month of months; let index = index" [ngValue]="index + 1">{{ month }}</option>
+      </select>
+
+      <select [(ngModel)]="filters.type" (change)="filters.categoryId = ''; load()" aria-label="Tipo">
+        <option value="">Todos</option>
+        <option value="Income">Entradas</option>
+        <option value="Expense">Saidas</option>
+      </select>
+
+      <select [(ngModel)]="filters.categoryId" (change)="load()" aria-label="Categoria">
+        <option value="">Categorias</option>
+        <option *ngFor="let category of filteredCategories()" [value]="category.id">{{ category.name }}</option>
+      </select>
+    </div>
+  </div>
+
+  <p class="alert" *ngIf="error">{{ error }}</p>
+
+  <ng-container *ngIf="dashboard as data">
+    <div class="stats-grid">
+      <article class="stat-card income">
+        <span>Entradas do mes</span>
+        <strong>{{ formatCurrency(data.monthlyIncome) }}</strong>
+      </article>
+      <article class="stat-card expense">
+        <span>Saidas do mes</span>
+        <strong>{{ formatCurrency(data.monthlyExpense) }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Saldo do mes</span>
+        <strong [class.negative]="data.monthlyBalance < 0">{{ formatCurrency(data.monthlyBalance) }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Saldo anual</span>
+        <strong [class.negative]="data.annualBalance < 0">{{ formatCurrency(data.annualBalance) }}</strong>
+      </article>
+    </div>
+
+    <div class="grid two">
+      <section class="panel chart-panel">
+        <div class="section-title">
+          <h2>Fluxo anual</h2>
+          <span>{{ data.year }}</span>
+        </div>
+        <div class="monthly-chart" aria-label="Entradas e saidas por mes">
+          <div class="month-column" *ngFor="let item of data.monthlyTotals">
+            <div class="bars">
+              <span class="bar income-bar" [ngStyle]="{ height: barHeight(item, 'Income') + '%' }"></span>
+              <span class="bar expense-bar" [ngStyle]="{ height: barHeight(item, 'Expense') + '%' }"></span>
+            </div>
+            <small>{{ months[item.month - 1] }}</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <h2>Categorias</h2>
+          <span>{{ data.categoryTotals.length }}</span>
+        </div>
+        <div class="category-bars" *ngIf="data.categoryTotals.length; else emptyCategories">
+          <div class="category-bar" *ngFor="let item of data.categoryTotals">
+            <div class="category-row">
+              <span><i class="swatch" [ngStyle]="{ background: item.categoryColor }"></i>{{ item.categoryName }}</span>
+              <strong>{{ formatCurrency(item.total) }}</strong>
+            </div>
+            <div class="track">
+              <span [class.expense-fill]="item.type === 'Expense'" [ngStyle]="{ width: categoryWidth(item) + '%', background: item.categoryColor }"></span>
+            </div>
+          </div>
+        </div>
+        <ng-template #emptyCategories>
+          <div class="empty">Sem dados para os filtros atuais.</div>
+        </ng-template>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="section-title">
+        <h2>Ultimos lancamentos</h2>
+        <span>{{ data.recentTransactions.length }}</span>
+      </div>
+      <div class="table-wrap" *ngIf="data.recentTransactions.length; else emptyTransactions">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Descricao</th>
+              <th>Categoria</th>
+              <th>Tipo</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let transaction of data.recentTransactions">
+              <td>{{ transaction.occurredOn }}</td>
+              <td>{{ transaction.description }}</td>
+              <td><i class="swatch" [ngStyle]="{ background: transaction.categoryColor }"></i> {{ transaction.categoryName }}</td>
+              <td><span class="badge" [class.income]="transaction.type === 'Income'" [class.expense]="transaction.type === 'Expense'">{{ typeLabel(transaction.type) }}</span></td>
+              <td [class.money-income]="transaction.type === 'Income'" [class.money-expense]="transaction.type === 'Expense'">{{ formatCurrency(transaction.amount) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #emptyTransactions>
+        <div class="empty">Sem lancamentos para os filtros atuais.</div>
+      </ng-template>
+    </section>
+  </ng-container>
+
+  <div class="empty" *ngIf="loading">Carregando...</div>
+</section>

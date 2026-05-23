@@ -1,0 +1,63 @@
+<section class="page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Organizacao</p>
+      <h1>Categorias</h1>
+      <p class="muted">Classifique entradas e saidas com cores diferentes.</p>
+    </div>
+  </div>
+
+  <p class="alert" *ngIf="error">{{ error }}</p>
+
+  <section class="panel">
+    <h2>{{ editingId ? 'Editar categoria' : 'Nova categoria' }}</h2>
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="save()">
+      <div class="field">
+        <label for="name">Nome</label>
+        <input id="name" type="text" formControlName="name" maxlength="80">
+      </div>
+
+      <div class="field">
+        <label for="type">Tipo</label>
+        <select id="type" formControlName="type">
+          <option value="Income">Entrada</option>
+          <option value="Expense">Saida</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="color">Cor</label>
+        <input id="color" type="color" formControlName="color">
+      </div>
+
+      <div class="actions form-actions">
+        <button type="submit" class="primary-button">{{ editingId ? 'Salvar' : 'Criar' }}</button>
+        <button type="button" class="secondary-button" *ngIf="editingId" (click)="reset()">Cancelar</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="section-title">
+      <h2>Categorias ativas</h2>
+      <span>{{ categories.length }}</span>
+    </div>
+
+    <div class="category-grid" *ngIf="categories.length; else emptyCategories">
+      <article class="category-item" *ngFor="let category of categories">
+        <div>
+          <span class="category-name"><i class="swatch" [ngStyle]="{ background: category.color }"></i>{{ category.name }}</span>
+          <span class="badge" [class.income]="category.type === 'Income'" [class.expense]="category.type === 'Expense'">{{ typeLabel(category.type) }}</span>
+        </div>
+        <div class="actions">
+          <button type="button" class="icon-button" (click)="edit(category)" title="Editar">Editar</button>
+          <button type="button" class="danger-button" (click)="archive(category)" title="Arquivar">Arquivar</button>
+        </div>
+      </article>
+    </div>
+
+    <ng-template #emptyCategories>
+      <div class="empty">{{ loading ? 'Carregando...' : 'Nenhuma categoria cadastrada.' }}</div>
+    </ng-template>
+  </section>
+</section>

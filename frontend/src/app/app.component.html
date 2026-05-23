@@ -1,0 +1,21 @@
+<header class="app-header" *ngIf="auth.user$ | async as user">
+  <a class="brand" routerLink="/dashboard" aria-label="Gastos Control">
+    <span class="brand-mark">GC</span>
+    <span>Gastos Control</span>
+  </a>
+
+  <nav class="nav-links" aria-label="Principal">
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/lancamentos" routerLinkActive="active">Lancamentos</a>
+    <a routerLink="/categorias" routerLinkActive="active">Categorias</a>
+  </nav>
+
+  <div class="user-menu">
+    <span>{{ user.name }}</span>
+    <button type="button" class="ghost-button" (click)="logout()">Sair</button>
+  </div>
+</header>
+
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>

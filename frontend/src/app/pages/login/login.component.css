@@ -1,0 +1,66 @@
+.auth-page {
+  align-items: center;
+  display: grid;
+  gap: clamp(24px, 6vw, 80px);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+  min-height: 100vh;
+  padding: clamp(20px, 6vw, 72px);
+}
+
+.auth-copy {
+  max-width: 660px;
+}
+
+.auth-copy h1 {
+  font-size: clamp(3rem, 8vw, 6rem);
+  margin-bottom: 18px;
+}
+
+.auth-copy p:not(.eyebrow) {
+  color: #516173;
+  font-size: clamp(1.05rem, 2vw, 1.28rem);
+  max-width: 560px;
+}
+
+.auth-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.mode-switch {
+  background: #edf3f8;
+  border-radius: 8px;
+  display: grid;
+  gap: 4px;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+}
+
+.mode-switch button {
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: #516173;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.mode-switch button.active {
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(22, 32, 51, 0.08);
+  color: #162033;
+}
+
+.primary-button {
+  width: 100%;
+}
+
+@media (max-width: 860px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-copy h1 {
+    font-size: clamp(2.4rem, 14vw, 4rem);
+  }
+}
