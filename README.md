@@ -7,7 +7,7 @@ Projeto para controle de gastos com backend C# Web API em arquitetura DDD, Entit
 - `backend/src/GastosControl.Domain`: entidades, enums e regras essenciais do dominio.
 - `backend/src/GastosControl.Application`: DTOs, contratos, servicos de aplicacao e casos de uso.
 - `backend/src/GastosControl.Infrastructure`: EF Core, DbContext, repositorios, hash de senha e geracao de JWT.
-- `backend/src/GastosControl.Api`: controllers REST, autenticacao, Swagger e inicializacao do banco.
+- `backend/src/GastosControl.Api`: controllers REST, autenticacao, Scalar e inicializacao do banco.
 - `frontend`: Angular com login, dashboard, filtros, categorias e lancamentos.
 
 ## Rodando com Docker
@@ -20,7 +20,7 @@ Depois acesse:
 
 - Frontend: http://localhost:4200
 - API: http://localhost:5000
-- Swagger: http://localhost:5000/swagger
+- Scalar: http://localhost:5000/scalar
 
 Usuario demo criado em ambiente de desenvolvimento:
 

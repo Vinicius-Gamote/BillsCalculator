@@ -15,7 +15,9 @@ using GastosControl.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using NSwag;
+using NSwag.Generation.Processors.Security;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,41 +30,30 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddOpenApiDocument(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "GastosControl API",
-        Version = "v1",
-        Description = "API para controle de gastos, entradas, categorias e dashboards."
-    });
+    options.DocumentName = "v1";
+    options.Title = "GastosControl API";
+    options.Version = "v1";
+    options.Description = "API para controle de gastos, entradas, categorias e dashboards.";
 
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Informe o token JWT gerado pelo login."
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
+    options.AddSecurity(
+        "Bearer",
+        Array.Empty<string>(),
+        new OpenApiSecurityScheme
         {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
+            Type = OpenApiSecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            Name = "Authorization",
+            In = OpenApiSecurityApiKeyLocation.Header,
+            Description = "Informe o token JWT gerado pelo login."
+        });
+
+    options.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
 });
+
+builder.Services.AddEndpointsApiExplorer();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Server=(localdb)\\mssqllocaldb;Database=GastosControlDb;Trusted_Connection=True;TrustServerCertificate=True;";
@@ -119,8 +110,18 @@ await DatabaseInitializer.InitializeAsync(app.Services, app.Environment);
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseOpenApi(options =>
+    {
+        options.Path = "/openapi/{documentName}.json";
+    });
+
+    app.MapScalarApiReference("/scalar", options =>
+    {
+        options.WithTitle("GastosControl API")
+            .WithOpenApiRoutePattern("/openapi/{documentName}.json")
+            .AddPreferredSecuritySchemes(new[] { "Bearer" })
+            .EnablePersistentAuthentication();
+    }).AllowAnonymous();
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
